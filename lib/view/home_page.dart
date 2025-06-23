@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MQTT Demo',
+      title: 'TF02 App',
       home: HomePage(client: client),
     );
   }
@@ -125,234 +125,271 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.center,
 
       children: [
-        SizedBox(height: 50),
-        RoundedBox(widget: _getDist()),
-        SizedBox(height: 10),
-        Row(
-          children: [
-            RoundedBox(widget: _getTemp()),
-            SizedBox(width: 10),
-            RoundedBox(widget: _getVel()),
-          ],
-        ),
+        index ? _sensores() : _circular(),
         SizedBox(height: 10),
         RoundedBox(widget: _button(widget.client)),
       ],
     );
   }
 
-  Widget _getDist() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        child: Column(
-          children: [
-            Text(
-              "Distância : $distAtual metros",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            SizedBox(
-              height: 250,
-              child: SfLinearGauge(
-                minimum: 0.0,
-                maximum: 45.0,
-                tickPosition: LinearElementPosition.cross,
-                orientation: LinearGaugeOrientation.vertical,
-                minorTicksPerInterval: 4,
-                animationDuration: 3000,
-                useRangeColorForAxis: true,
-                animateAxis: true,
-                interval: 5,
-                majorTickStyle: LinearTickStyle(
-                  length: 200,
-                  color: Colors.white,
-                ),
-                axisLabelStyle: TextStyle(fontSize: 12.0, color: Colors.white),
-                axisTrackStyle: LinearAxisTrackStyle(
-                  color: Colors.white,
-                  thickness: 2,
-                  edgeStyle: LinearEdgeStyle.bothFlat,
-                ),
-                markerPointers: [
-                  LinearShapePointer(
-                    value: distInicial,
-                    color: Colors.white,
-                    borderColor: Colors.grey,
-                    borderWidth: 2,
-                    offset: 0,
-                    height: 20,
-                    width: 20,
-                    shapeType: LinearShapePointerType.invertedTriangle,
-                    position: LinearElementPosition.outside,
-                  ),
-                ],
-                ranges: <LinearGaugeRange>[
-                  LinearGaugeRange(
-                    startWidth: 0,
-                    endWidth: 100,
-                    position: LinearElementPosition.outside,
-                    shaderCallback: (bounds) => RadialGradient(
-                      center: Alignment.bottomRight,
-                      radius: 1.5,
-                      colors: [Colors.red, Colors.green],
-                    ).createShader(bounds),
-                  ),
+  Widget _circular() {
+    return Column(
+      children: [
+        SizedBox(height: 250),
+        Text(
+          "Sensor desconectado",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 50),
+        SizedBox(
+          height: 50,
+          width: 50,
+          child: CircularProgressIndicator(color: Colors.red),
+        ),
+        SizedBox(height: 50),
+      ],
+    );
+  }
 
-                  LinearGaugeRange(
-                    startWidth: 0,
-                    endWidth: 100,
-                    position: LinearElementPosition.inside,
-                    shaderCallback: (bounds) => RadialGradient(
-                      center: Alignment.bottomLeft,
-                      radius: 1.5,
-                      colors: [Colors.red, Colors.green],
-                    ).createShader(bounds),
-                  ),
-                ],
+  Widget _sensores() {
+    return Column(
+      children: [
+        SizedBox(height: 50),
+        _getDist(),
+        SizedBox(height: 10),
+        Row(children: [_getTemp(), SizedBox(width: 10), _getVel()]),
+      ],
+    );
+  }
+
+  Widget _getDist() {
+    return RoundedBox(
+      widget: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          child: Column(
+            children: [
+              Text(
+                "Distância : $distAtual metros",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
-            ),
-          ],
+              SizedBox(
+                height: 250,
+                child: SfLinearGauge(
+                  minimum: 0.0,
+                  maximum: 45.0,
+                  tickPosition: LinearElementPosition.cross,
+                  orientation: LinearGaugeOrientation.vertical,
+                  minorTicksPerInterval: 4,
+                  animationDuration: 3000,
+                  useRangeColorForAxis: true,
+                  animateAxis: true,
+                  interval: 5,
+                  majorTickStyle: LinearTickStyle(
+                    length: 200,
+                    color: Colors.white,
+                  ),
+                  axisLabelStyle: TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.white,
+                  ),
+                  axisTrackStyle: LinearAxisTrackStyle(
+                    color: Colors.white,
+                    thickness: 2,
+                    edgeStyle: LinearEdgeStyle.bothFlat,
+                  ),
+                  markerPointers: [
+                    LinearShapePointer(
+                      value: distInicial,
+                      color: Colors.white,
+                      borderColor: Colors.grey,
+                      borderWidth: 2,
+                      offset: 0,
+                      height: 20,
+                      width: 20,
+                      shapeType: LinearShapePointerType.invertedTriangle,
+                      position: LinearElementPosition.outside,
+                    ),
+                  ],
+                  ranges: <LinearGaugeRange>[
+                    LinearGaugeRange(
+                      startWidth: 0,
+                      endWidth: 100,
+                      position: LinearElementPosition.outside,
+                      shaderCallback: (bounds) => RadialGradient(
+                        center: Alignment.bottomRight,
+                        radius: 1.5,
+                        colors: [Colors.red, Colors.green],
+                      ).createShader(bounds),
+                    ),
+
+                    LinearGaugeRange(
+                      startWidth: 0,
+                      endWidth: 100,
+                      position: LinearElementPosition.inside,
+                      shaderCallback: (bounds) => RadialGradient(
+                        center: Alignment.bottomLeft,
+                        radius: 1.5,
+                        colors: [Colors.red, Colors.green],
+                      ).createShader(bounds),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _getTemp() {
-    return SizedBox(
-      width: 110,
-      height: 250,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Text(
-              "Temperatura\n $tempAtual °C",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-              ),
-            ),
-            SizedBox(height: 10),
-            SizedBox(
-              height: 150,
-
-              child: SfLinearGauge(
-                animationDuration: 3000,
-                minimum: 0.0,
-                maximum: 100.0,
-                interval: 20,
-                tickPosition: LinearElementPosition.inside,
-                orientation: LinearGaugeOrientation.vertical,
-                minorTicksPerInterval: 4,
-                useRangeColorForAxis: true,
-                animateAxis: true,
-                majorTickStyle: LinearTickStyle(
-                  length: 10,
+    return RoundedBox(
+      widget: SizedBox(
+        width: 110,
+        height: 250,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Text(
+                "Temperatura\n $tempAtual °C",
+                textAlign: TextAlign.center,
+                style: TextStyle(
                   color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
                 ),
-                axisLabelStyle: TextStyle(fontSize: 12.0, color: Colors.white),
-                axisTrackStyle: LinearAxisTrackStyle(
-                  thickness: 15,
-                  // color: Colors.transparent,
-                  borderColor: Colors.white,
-                  borderWidth: 2,
-                  gradient: LinearGradient(
-                    colors: [Colors.red, Colors.orange, Colors.blue],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  edgeStyle: LinearEdgeStyle.bothCurve,
-                ),
-                markerPointers: [
-                  LinearShapePointer(
-                    value: tempAtual,
-                    offset: 0,
-                    borderColor: Colors.white,
-                    color: Colors.white,
-                    height: 10,
-                    width: 10,
-                    shapeType: LinearShapePointerType.invertedTriangle,
-                    position: LinearElementPosition.outside,
-                  ),
-                ],
               ),
-            ),
-          ],
+              SizedBox(height: 10),
+              SizedBox(
+                height: 150,
+
+                child: SfLinearGauge(
+                  animationDuration: 3000,
+                  minimum: 0.0,
+                  maximum: 100.0,
+                  interval: 20,
+                  tickPosition: LinearElementPosition.inside,
+                  orientation: LinearGaugeOrientation.vertical,
+                  minorTicksPerInterval: 4,
+                  useRangeColorForAxis: true,
+                  animateAxis: true,
+                  majorTickStyle: LinearTickStyle(
+                    length: 10,
+                    color: Colors.white,
+                  ),
+                  axisLabelStyle: TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.white,
+                  ),
+                  axisTrackStyle: LinearAxisTrackStyle(
+                    thickness: 15,
+                    // color: Colors.transparent,
+                    borderColor: Colors.white,
+                    borderWidth: 2,
+                    gradient: LinearGradient(
+                      colors: [Colors.red, Colors.orange, Colors.blue],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    edgeStyle: LinearEdgeStyle.bothCurve,
+                  ),
+                  markerPointers: [
+                    LinearShapePointer(
+                      value: tempAtual,
+                      offset: 0,
+                      borderColor: Colors.white,
+                      color: Colors.white,
+                      height: 10,
+                      width: 10,
+                      shapeType: LinearShapePointerType.invertedTriangle,
+                      position: LinearElementPosition.outside,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _getVel() {
-    return SizedBox(
-      height: 250,
-      width: 220,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SfRadialGauge(
-          title: GaugeTitle(
-            text: "Velocidade",
-            textStyle: TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          enableLoadingAnimation: true,
-          animationDuration: 3000,
-          axes: <RadialAxis>[
-            RadialAxis(
-              maximum: 100,
-              interval: 10,
-              minimum: 0,
-              axisLabelStyle: GaugeTextStyle(
-                color: Colors.grey,
-                fontSize: 12,
+    return RoundedBox(
+      widget: SizedBox(
+        height: 250,
+        width: 220,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SfRadialGauge(
+            title: GaugeTitle(
+              text: "Velocidade",
+              textStyle: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
-              annotations: [
-                GaugeAnnotation(
-                  axisValue: 50,
-                  positionFactor: 0.3,
-                  widget: Text(
-                    '${velocidade.toStringAsFixed(2)}\nKm/h',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+            ),
+            enableLoadingAnimation: true,
+            animationDuration: 3000,
+            axes: <RadialAxis>[
+              RadialAxis(
+                maximum: 100,
+                interval: 10,
+                minimum: 0,
+                axisLabelStyle: GaugeTextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+                annotations: [
+                  GaugeAnnotation(
+                    axisValue: 50,
+                    positionFactor: 0.3,
+                    widget: Text(
+                      '${velocidade.toStringAsFixed(2)}\nKm/h',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
-                ),
-              ],
-              pointers: <GaugePointer>[
-                NeedlePointer(
-                  value: velocidade,
-                  needleStartWidth: 1,
-                  needleEndWidth: 5,
-                  knobStyle: KnobStyle(
-                    knobRadius: 0.05,
-                    borderColor: Colors.black,
-                    borderWidth: 0.02,
-                    color: Colors.white,
+                ],
+                pointers: <GaugePointer>[
+                  NeedlePointer(
+                    value: velocidade,
+                    needleStartWidth: 1,
+                    needleEndWidth: 5,
+                    knobStyle: KnobStyle(
+                      knobRadius: 0.05,
+                      borderColor: Colors.black,
+                      borderWidth: 0.02,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                RangePointer(
-                  value: velocidade,
-                  dashArray: <double>[8, 2],
-                  gradient: const SweepGradient(
-                    colors: <Color>[Colors.green, Colors.red],
-                    stops: <double>[0.25, 0.75],
+                  RangePointer(
+                    value: velocidade,
+                    dashArray: <double>[8, 2],
+                    gradient: const SweepGradient(
+                      colors: <Color>[Colors.green, Colors.red],
+                      stops: <double>[0.25, 0.75],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
